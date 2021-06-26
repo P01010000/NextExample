@@ -11,10 +11,12 @@
   "dependencies": {
     "@reduxjs/toolkit": "^1.6.0",
     "next": "^11.0.1",
+    "next-connect": "^0.10.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-redux": "^7.2.4",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "zlib": "^1.0.5"
   },
   "devDependencies": {
     "@types/react": "^17.0.11",
