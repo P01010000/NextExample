@@ -7,6 +7,8 @@ import { initializeStore } from '../store';
 import { useExampleStateValue, useLastUpdate } from '../store/example/selector';
 import { decrement, increment, reset, tick } from '../store/example/actions';
 import { useDispatch } from 'react-redux';
+import { applyMiddlewares } from '../utils/middleware';
+import loggerMiddleware from '../middlewares/loggerMiddleware';
 
 
 const propTypes = {
@@ -46,7 +48,7 @@ Dynamic.displayName = 'Dynamic';
 
 export default Dynamic;
 
-export const getServerSideProps: GetServerSideProps<DynamicProps> = async ({ req, res }) => {
+const getServerSideProps: GetServerSideProps<DynamicProps> = async ({ req, res }) => {
     const reduxStore = initializeStore();
     const { dispatch } = reduxStore;
 
@@ -54,3 +56,7 @@ export const getServerSideProps: GetServerSideProps<DynamicProps> = async ({ req
 
     return { props: { initialReduxState: reduxStore.getState(), a: Math.random() < 0.5 }}
 }
+
+const withMiddleware = applyMiddlewares(getServerSideProps, loggerMiddleware);
+
+export { withMiddleware as getServerSideProps };
