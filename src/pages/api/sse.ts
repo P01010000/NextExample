@@ -31,6 +31,7 @@ const get = async (req: NextApiRequest, res: NextApiResponse): Promise<void> => 
         res.write(`id: ${Date.now()}\n`);
         res.write('event: progress\n');
         res.write(`data: ${i}\n\n`);
+        (res as any).flush();
         await new Promise(resolve => setTimeout(resolve, 200));
     }
     res.end();
