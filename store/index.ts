@@ -2,13 +2,16 @@ import { useMemo } from 'react'
 import { configureStore, EnhancedStore } from '@reduxjs/toolkit';
 import rootReducer, { RootState } from './rootReducer';
 
+let store: EnhancedStore<RootState> | undefined;
+
 const initStore = (preloadedState: RootState | undefined): EnhancedStore<RootState> => {
     return configureStore({
         reducer: rootReducer,
         preloadedState,
     });
 }
-let store: EnhancedStore<RootState> | undefined;
+
+export type AppDispatch = ReturnType<typeof initStore>['dispatch'];
 
 export const initializeStore = (preloadedState: RootState | undefined = undefined): ReturnType<typeof initStore> => {
     // Always create new store for server side

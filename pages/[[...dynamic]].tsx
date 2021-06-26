@@ -1,9 +1,8 @@
 import type { FunctionComponent } from 'react';
 import type { GetServerSideProps } from 'next';
-import type { AppDispatch } from '../store/rootReducer';
 
 import PropTypes, { InferProps } from 'prop-types';
-import { initializeStore } from '../store';
+import { initializeStore, AppDispatch } from '../store';
 import { useExampleStateValue, useLastUpdate } from '../store/example/selector';
 import { decrement, increment, reset, tick } from '../store/example/actions';
 import { useDispatch } from 'react-redux';
