@@ -35,7 +35,7 @@ const get = async (req: NextApiRequest, res: NextApiResponse): Promise<void> => 
     stream.write(`retry:${5000 + Math.round(Math.random() * 10000)}\n\n`);
     stream.flush();
 
-    for (let i = 0; i <= 100 && active; i++) {
+    for (let i = 0; i <= 100 && active; i += 5) {
         stream.write(`id: ${Date.now()}\n`);
         stream.write('event: progress\n');
         stream.write(`data: ${i}\n\n`);
