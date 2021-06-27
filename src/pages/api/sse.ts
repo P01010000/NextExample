@@ -2,6 +2,12 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import nextConnect from 'next-connect';
 import zlib from 'zlib';
 
+/* Does not work when deploying at vercel, probably due to the proxy configuration
+ * and maxDuration for connections.
+ * Without using content-encoding here you get a response, but all the messages
+ * are sent at once when connection closes.
+ * With content-encoding the eventSource always triggers an error
+ */
 const get = async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
     let active = true;
 
