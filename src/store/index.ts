@@ -8,6 +8,7 @@ const initStore = (preloadedState: RootState | undefined): EnhancedStore<RootSta
     return configureStore({
         reducer: rootReducer,
         preloadedState,
+        devTools: process.env.NODE_ENV === 'development',
     });
 }
 
