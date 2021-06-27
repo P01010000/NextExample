@@ -20,10 +20,18 @@ export const initializeStore = (preloadedState: RootState | undefined = undefine
     // After navigating to a page with an initial Redux state, merge that state
     // with the current state in the store, and create a new store
     if (preloadedState && store) {
+        
+        if (preloadedState === store.getState()) {
+            // no merging necessary
+            return store;
+        }
+
         store = initStore({
             ...store.getState(),
             ...preloadedState,
-        })
+        });
+
+        return store;
     }
 
     // Create store once at client
