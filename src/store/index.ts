@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { configureStore, EnhancedStore } from '@reduxjs/toolkit';
 import rootReducer, { RootState } from './rootReducer';
+import { pokemonApi } from '../services/pokemon/pokemon';
 
 let store: EnhancedStore<RootState> | undefined;
 
@@ -9,6 +10,8 @@ const initStore = (preloadedState: RootState | undefined): EnhancedStore<RootSta
         reducer: rootReducer,
         preloadedState,
         devTools: process.env.NODE_ENV === 'development',
+        middleware: (getDefaultMiddleware) =>
+            getDefaultMiddleware().concat(pokemonApi.middleware),
     });
 }
 
@@ -23,7 +26,8 @@ export const initializeStore = (preloadedState: RootState | undefined = undefine
     if (preloadedState && store) {
         
         if (preloadedState === store.getState()) {
-            // no merging necessary
+            // no merging necessary, also prevents creation of two stores
+            // due to react strict mode
             return store;
         }
 
