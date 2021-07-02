@@ -9,6 +9,7 @@ import { useDispatch } from 'react-redux';
 import { applyMiddlewares } from '../utils/middleware';
 import loggerMiddleware from '../middlewares/loggerMiddleware';
 import Converter from '../components/converter/Converter';
+import Pokemon from '../components/pokemon/Pokemon';
 
 
 const propTypes = {
@@ -39,6 +40,7 @@ const Dynamic: FunctionComponent<DynamicProps> = ({ a }) => {
                 <button style={{ backgroundColor: 'gray' }} onClick={() => dispatch(reset())}>Reset</button>
             </div>
             <Converter/>
+            <Pokemon/>
         </div>
     );
 }
