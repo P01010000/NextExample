@@ -10,6 +10,7 @@ import { applyMiddlewares } from '../utils/middleware';
 import loggerMiddleware from '../middlewares/loggerMiddleware';
 import Converter from '../components/converter/Converter';
 import Pokemon from '../components/pokemon/Pokemon';
+import DynamicModule from '../components/dynamicModule/DynamicModule';
 
 
 const propTypes = {
@@ -41,6 +42,13 @@ const Dynamic: FunctionComponent<DynamicProps> = ({ a }) => {
             </div>
             <Converter/>
             <Pokemon/>
+            <DynamicModule
+                 system={{
+                    url: '/app3/remoteEntry.js',
+                    module: './Button',
+                    scope: 'app3'
+                }}
+            />
         </div>
     );
 }
