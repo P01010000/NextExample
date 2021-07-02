@@ -42,7 +42,7 @@ const Pokemon: FunctionComponent = () => {
             {pokemon.status === QueryStatus.rejected && (
                 <p>An error occured while searching for <i>{search}</i></p>
             )}
-            {value && pokemon.status === QueryStatus.fulfilled && (
+            {value && pokemon.status === QueryStatus.fulfilled && pokemon.data && (
                 <>
                     <div>Name: {pokemon.data.name}</div>
                     <div>Order: {pokemon.data.order}</div>

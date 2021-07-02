@@ -1,6 +1,6 @@
 // types are incomplete
 
-export type Pokemon = {
+export type PokemonDTO = {
     height: number;
     order: number;
     name: string;
@@ -8,7 +8,7 @@ export type Pokemon = {
     types: PokemonType[];
 }
 
-export type PokemonType = {
+type PokemonType = {
     slot: number;
     type: {
         name: ElementTypes;
@@ -16,7 +16,7 @@ export type PokemonType = {
     }
 }
 
-export enum ElementTypes {
+enum ElementTypes {
     Ground = 'ground',
     Water = 'water',
     Electro = 'electric',
