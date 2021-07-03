@@ -13,7 +13,7 @@ const propTypes = {
     }).isRequired,
 }
 
-type DynamicModuleProps = InferProps<typeof propTypes> & { [k: string]: unknown };
+export type DynamicModuleProps = InferProps<typeof propTypes> & { [k: string]: unknown };
 
 
 const DynamicModule: FunctionComponent<DynamicModuleProps> = ({ system, ...props }) => {
