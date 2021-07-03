@@ -7,8 +7,7 @@
     "build": "npm run schema && next build",
     "start": "next start",
     "lint": "next lint",
-    "schema": "ts-generate-schema **/*.response.dto.ts",
-    "prepare": "npm run schema"
+    "schema": "ts-generate-schema **/*.response.dto.ts"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.6.0",
