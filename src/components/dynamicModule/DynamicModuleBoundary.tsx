@@ -41,6 +41,17 @@ export default class DynamicModuleBoundary extends PureComponent<DynamicModuleBo
         this.setState({ hasError: true })
     }
 
+    componentDidUpdate(prevProps: DynamicModuleBoundaryProps) {
+        const { system } = this.props;
+        if (prevProps.system.url !== system.url
+            || prevProps.system.module !== system.module
+            || prevProps.system.scope !== system.scope
+            || prevProps.system.compatModule !== system.compatModule
+        ) {
+            this.setState(state => ({ ...state, compatibilityMode: false, hasError: false, system: this.props.system }));
+        }
+    }
+
     render() {
         if (this.state.hasError) {
             return null;
