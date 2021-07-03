@@ -24,17 +24,17 @@ const defaultProps = {
 type DynamicProps = InferProps<typeof propTypes>;
 
 const remote1 = {
-    url: '/app2/remoteEntry.js',
-    module: './ButtonContainer',
-    compatModule: undefined as string | undefined,
-    scope: 'app2',
+    url: '/example1/remoteEntry.js',
+    module: './App',
+    compatModule: './AppCompat',
+    scope: 'example1',
 };
 
 const remote2 = {
-    url: '/app3/remoteEntry.js',
-    module: './Button',
-    compatModule: './CompatApp',
-    scope: 'app3'
+    url: '/example2/remoteEntry.js',
+    module: './App',
+    compatModule: './AppCompat',
+    scope: 'example2'
 };
 
 const Dynamic: FunctionComponent<DynamicProps> = ({ a }) => {
