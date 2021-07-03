@@ -16,7 +16,10 @@ export const pokemonApi = createApi({
     }),
     endpoints: (builder) => ({
         getPokemonList: builder.query<PokemonListDTO, Record<'offset' | 'limit', number>>({
-            query: (params) => ({ url: `pokemon`, params }),
+            query: (params) => ({
+                url: `pokemon`,
+                params,
+            }),
             transformResponse: (response) => {
                 const valid = validatePokemonListDto(response);
                 if (valid) {
@@ -24,10 +27,25 @@ export const pokemonApi = createApi({
                 }
                 console.error(validatePokemonListDto.errors)
                 throw new Error('response did not match expected format');
-            }
+            },
         }),
         getPokemonByName: builder.query<PokemonDTO | null, string>({
-            query: (name) => `pokemon/${name}`,
+            query: (name) => ({
+                url: `pokemon/${name}`,
+                responseHandler: (res) => {
+                    const contentType = res.headers.get('Content-Type');
+                    switch (true) {
+                        case contentType?.includes('application/json'):
+                            return res.json();
+                        case contentType?.includes('multipart/form-data'):
+                            return res.formData();
+                        case contentType?.includes('application/octet-stream'):
+                            return res.blob();
+                        default:
+                            return res.text();
+                    }
+                }
+            }),
             transformResponse: (response) => {
                 const valid = validatePokemonDto(response);
                 if (valid) {
