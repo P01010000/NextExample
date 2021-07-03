@@ -10,10 +10,12 @@ module.exports = {
                     react: {
                         eager: true,
                         singleton: true,
+                        requiredVersion: require('./package.json').dependencies.react,
                     },
                     "react-dom": {
                         eager: true,
                         singleton: true,
+                        requiredVersion: require('./package.json').dependencies['react-dom'],
                     },
                 },
             })
