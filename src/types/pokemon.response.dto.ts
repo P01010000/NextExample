@@ -6,6 +6,14 @@ export type PokemonDTO = {
     name: string;
     weight: number;
     types: PokemonType[];
+    sprites: {
+        front_default: string;
+        other: {
+            dream_world: {
+                front_default: string;
+            }
+        }
+    }
 }
 
 type PokemonType = {

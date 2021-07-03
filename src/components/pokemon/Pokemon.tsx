@@ -1,4 +1,5 @@
 import { QueryStatus } from '@reduxjs/toolkit/dist/query';
+import Image from 'next/image';
 import { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { pokemonApi } from '../../services/pokemon/pokemon';
@@ -64,6 +65,7 @@ const Pokemon: FunctionComponent = () => {
                     <div>Height: {pokemon.data.height}</div>
                     <div>Weight: {pokemon.data.weight}</div>
                     <div>Types: {pokemon.data.types.map(t => t.type.name).join(', ')}</div>
+                    <Image src={pokemon.data.sprites.other.dream_world.front_default} alt="" width={192} height={192} unoptimized />
                 </>
             )}
         </div>
