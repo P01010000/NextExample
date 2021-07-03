@@ -1,5 +1,5 @@
 import { QueryStatus } from '@reduxjs/toolkit/dist/query';
-import { FunctionComponent, useCallback, useMemo, useState } from 'react';
+import { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { pokemonApi } from '../../services/pokemon/pokemon';
 import debounce from '../../utils/debounce';
@@ -9,6 +9,10 @@ const Pokemon: FunctionComponent = () => {
     const dispatch = useDispatch();
     const [value, setValue] = useState('');
     const [search, setSearch] = useState('');
+    
+    useEffect(() => {
+        dispatch(pokemonApi.endpoints.getPokemonList.initiate({ offset: 0, limit: 151 }));
+    }, [dispatch]);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const searchPokemon = useCallback(debounce((value: string) => {
@@ -26,21 +30,32 @@ const Pokemon: FunctionComponent = () => {
 
     const selectPokemon = useMemo(() => pokemonApi.endpoints.getPokemonByName.select(search), [search]);
     const pokemon = useSelector(selectPokemon);
+    const selectPokemonList = useMemo(() => pokemonApi.endpoints.getPokemonList.select({ offset: 0, limit: 151 }), []);
+    const list = useSelector(selectPokemonList);
 
     return (
         <div style={{ margin: 20 }}>
             <h3>Pokemon search</h3>
             <input
                 value={value}
+                list="pokemonList"
                 onChange={onChange}
                 placeholder="Pokemon"
                 style={{ marginBottom: 20 }}
             />
+            <datalist id="pokemonList">
+                {list.isSuccess && list.data.results.map(({ name }) => (
+                    <option key={name} value={name}/>
+                ))}
+            </datalist>
             {pokemon.status === QueryStatus.pending && (
                 <p>Loading...</p>
             )}
             {pokemon.status === QueryStatus.rejected && (
-                <p>An error occured while searching for <i>{search}</i></p>
+                <>
+                    <p>An error occured while searching for <i>{search}</i></p>
+                    <p>{(pokemon.error as Error)?.message}</p>
+                </>
             )}
             {value && pokemon.status === QueryStatus.fulfilled && pokemon.data && (
                 <>
