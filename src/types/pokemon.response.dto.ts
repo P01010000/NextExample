@@ -20,5 +20,19 @@ enum ElementTypes {
     Ground = 'ground',
     Water = 'water',
     Electro = 'electric',
-    Fire = 'fire'
+    Fire = 'fire',
+    Grass = 'grass',
+    Poison = 'poison',
+    Psychic = 'psychic',
+    Normal = 'normal',
+    Rock = 'rock',
+    Flying = 'flying',
+    Bug = 'bug',
+    Ice = 'ice',
+    Fighting = 'fighting',
+    Ghost = 'ghost',
+    Fairy = 'fairy',
+    Dark = 'dark',
+    Steel = 'steel',
+    Dragon = 'dragon'
 }
