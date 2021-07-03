@@ -1,4 +1,4 @@
-import type { FunctionComponent } from 'react';
+import { FunctionComponent, useCallback, useState } from 'react';
 import type { GetServerSideProps } from 'next';
 
 import PropTypes, { InferProps } from 'prop-types';
@@ -23,11 +23,30 @@ const defaultProps = {
 
 type DynamicProps = InferProps<typeof propTypes>;
 
+const remote1 = {
+    url: '/app2/remoteEntry.js',
+    module: './ButtonContainer',
+    compatModule: undefined as string | undefined,
+    scope: 'app2',
+};
+
+const remote2 = {
+    url: '/app3/remoteEntry.js',
+    module: './Button',
+    compatModule: './CompatApp',
+    scope: 'app3'
+};
+
 const Dynamic: FunctionComponent<DynamicProps> = ({ a }) => {
     const dispatch = useDispatch<AppDispatch>();
+    const [system, setSystem] = useState(remote1);
     const lastUpdate = useLastUpdate();
     const count = useExampleStateValue('count');
     const light = useExampleStateValue('light');
+
+    const switchRemote = useCallback(() => {
+        setSystem(system.scope === remote1.scope ? remote2 : remote1);
+    }, [system]);
 
     return (
         <div>
@@ -40,15 +59,13 @@ const Dynamic: FunctionComponent<DynamicProps> = ({ a }) => {
                 <button style={{ backgroundColor: 'red' }} onClick={() => dispatch(decrement())}>Decrement</button>
                 <button style={{ backgroundColor: 'gray' }} onClick={() => dispatch(reset())}>Reset</button>
             </div>
-            <Converter/>
-            <Pokemon/>
+            <Converter />
+            <Pokemon />
+            <div>
+                <button onClick={switchRemote}>Switch Remote</button>
+            </div>
             <DynamicModuleBoundary
-                 system={{
-                    url: '/app3/remoteEntry.js',
-                    module: './App',
-                    compatModule: './CompatApp',
-                    scope: 'app3'
-                }}
+                system={system}
                 count={count}
             />
         </div>
@@ -67,7 +84,7 @@ const getServerSideProps: GetServerSideProps<DynamicProps> = async ({ req, res }
 
     dispatch(tick({ light: false, lastUpdate: Date.now() }));
 
-    return { props: { initialReduxState: reduxStore.getState(), a: Math.random() < 0.5 }}
+    return { props: { initialReduxState: reduxStore.getState(), a: Math.random() < 0.5 } }
 }
 
 const withMiddleware = applyMiddlewares(getServerSideProps, loggerMiddleware);
