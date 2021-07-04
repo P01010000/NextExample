@@ -1,17 +1,19 @@
 import { useMemo } from 'react'
-import { configureStore, EnhancedStore } from '@reduxjs/toolkit';
+import { AnyAction, configureStore, EnhancedStore } from '@reduxjs/toolkit';
 import rootReducer, { RootState } from './rootReducer';
 import { pokemonApi } from '../services/pokemon/pokemon';
+import { CurriedGetDefaultMiddleware } from '@reduxjs/toolkit/dist/getDefaultMiddleware';
 
 let store: EnhancedStore<RootState> | undefined;
 
-const initStore = (preloadedState: RootState | undefined): EnhancedStore<RootState> => {
+const middlewareEnhancer = (middlewares: CurriedGetDefaultMiddleware<RootState>) => middlewares().concat(pokemonApi.middleware);
+
+const initStore = (preloadedState: RootState | undefined): EnhancedStore<RootState, AnyAction, ReturnType<typeof middlewareEnhancer>> => {
     return configureStore({
         reducer: rootReducer,
         preloadedState,
         devTools: process.env.NODE_ENV === 'development',
-        middleware: (getDefaultMiddleware) =>
-            getDefaultMiddleware().concat(pokemonApi.middleware),
+        middleware: middlewareEnhancer,
     });
 }
 
