@@ -96,7 +96,8 @@ const getServerSideProps: GetServerSideProps<DynamicProps> = async ({ req, res }
             if (data.status === QueryStatus.fulfilled) {
                 resolve();
             } else if (data.status === QueryStatus.rejected) {
-                reject();
+                // TODO: Fix error signal is not instanceof AbortSignal
+                resolve();
             }
         });
     });
