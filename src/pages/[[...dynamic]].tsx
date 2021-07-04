@@ -90,14 +90,13 @@ const getServerSideProps: GetServerSideProps<DynamicProps> = async ({ req, res }
 
     await new Promise<void>((resolve, reject) => {
         let listener = reduxStore.subscribe(() => {
-            const getList = pokemonApi.endpoints.getPokemonList.select({ offset: 0, limit: 151 });
-            const data = getList(reduxStore.getState());
+            const getPokemonList = pokemonApi.endpoints.getPokemonList.select({ offset: 0, limit: 151 });
+            const pokemonList = getPokemonList(reduxStore.getState());
             listener();
-            if (data.status === QueryStatus.fulfilled) {
+            if (pokemonList.status === QueryStatus.fulfilled) {
                 resolve();
-            } else if (data.status === QueryStatus.rejected) {
-                // TODO: Fix error signal is not instanceof AbortSignal
-                resolve();
+            } else if (pokemonList.status === QueryStatus.rejected) {
+                reject(pokemonList.error);
             }
         });
     });
