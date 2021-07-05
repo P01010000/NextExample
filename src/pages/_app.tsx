@@ -1,4 +1,4 @@
-import '../styles/globals.css'
+import 'tailwindcss/tailwind.css'
 import type { AppProps } from 'next/app'
 import type { FunctionComponent } from 'react';
 import { Provider } from 'react-redux'

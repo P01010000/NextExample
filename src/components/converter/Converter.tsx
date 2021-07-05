@@ -30,11 +30,11 @@ const Converter: FunctionComponent = () => {
     }, [setIsConverting]);
 
     return (
-        <div>
+        <div className="flex">
             {isConverting ? (
                 <div>Konvertiere... {progress} %</div>
             ) : (
-                <button onClick={onClick} style={{ backgroundColor: 'blue' }}>Konvertieren</button>
+                <button className="bg-blue-500 p-1.5 m-4 flex-1" onClick={onClick}>Convert</button>
             )}
         </div>
     )

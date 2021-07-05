@@ -35,14 +35,14 @@ const Pokemon: FunctionComponent = () => {
     const list = useSelector(selectPokemonList);
 
     return (
-        <div style={{ margin: 20 }}>
-            <h3>Pokemon search</h3>
+        <div className="m-5">
+            <h3 className="mb-2">Pokemon search</h3>
             <input
                 value={value}
                 list="pokemonList"
                 onChange={onChange}
                 placeholder="Pokemon"
-                style={{ marginBottom: 20 }}
+                className="mb-5 bg-gray-200 dark:bg-gray-800 p-1 rounded"
             />
             <datalist id="pokemonList">
                 {list.isSuccess && list.data.results.map(({ name }) => (

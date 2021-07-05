@@ -56,15 +56,15 @@ const Dynamic: FunctionComponent<DynamicProps> = ({ a }) => {
             <p>lastUpdate: {lastUpdate}</p>
             <p>count: {count}</p>
             <p>light: {String(light)}</p>
-            <div>
-                <button style={{ backgroundColor: 'green' }} onClick={() => dispatch(increment())}>Increment</button>
-                <button style={{ backgroundColor: 'red' }} onClick={() => dispatch(decrement())}>Decrement</button>
-                <button style={{ backgroundColor: 'gray' }} onClick={() => dispatch(reset())}>Reset</button>
+            <div className="flex">
+                <button className="bg-green-500 p-1.5 flex-1 m-4" onClick={() => dispatch(increment())}>Increment</button>
+                <button className="bg-red-500 p-1.5 flex-1 m-4" onClick={() => dispatch(decrement())}>Decrement</button>
+                <button className="bg-gray-500 p-1.5 flex-1 m-4" onClick={() => dispatch(reset())}>Reset</button>
             </div>
             <Converter />
             <Pokemon />
-            <div>
-                <button onClick={switchRemote}>Switch Remote</button>
+            <div className="flex justify-center">
+                <button onClick={switchRemote} className="w-1/3 bg-purple-400 dark:bg-purple-700 p-1.5 m-4">Switch Remote</button>
             </div>
             <DynamicModuleBoundary
                 system={system}

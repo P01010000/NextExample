@@ -26,6 +26,8 @@
     "@types/uuid": "^8.3.0",
     "eslint": "^7.29.0",
     "eslint-config-next": "^11.0.1",
+    "postcss": "^8.2.13",
+    "tailwindcss": "^2.2.4",
     "ts-generate-schema": "^2.0.0",
     "typescript": "^4.3.4"
   }
