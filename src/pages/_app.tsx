@@ -1,5 +1,5 @@
 import '../styles/globals.css'
-import type { AppProps } from 'next/app'
+import type { AppProps } from 'next/app';
 import type { FunctionComponent } from 'react';
 import { Provider } from 'react-redux'
 import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only';

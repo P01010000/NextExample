@@ -14,6 +14,8 @@ import DynamicModuleBoundary from '../components/dynamicModule/DynamicModuleBoun
 import { pokemonApi } from '../services/pokemon/pokemon';
 import { QueryStatus } from '@reduxjs/toolkit/dist/query';
 
+// @ts-ignore
+const Example3 = (await import('example3/AppCompat')).default;
 
 const propTypes = {
     a: PropTypes.bool,
@@ -63,6 +65,9 @@ const Dynamic: FunctionComponent<DynamicProps> = ({ a }) => {
             </div>
             <Converter />
             <Pokemon />
+            <h3>SSR</h3>
+            <Example3 count={count} />
+            <h3>Dynamic</h3>
             <div>
                 <button onClick={switchRemote}>Switch Remote</button>
             </div>

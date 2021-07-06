@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.6.0",
+    "@telenko/node-mf": "^0.0.5",
     "abortcontroller-polyfill": "^1.7.3",
     "ajv": "^8.6.0",
     "next": "^11.0.1",
