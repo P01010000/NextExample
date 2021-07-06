@@ -15,7 +15,7 @@ import { pokemonApi } from '../services/pokemon/pokemon';
 import { QueryStatus } from '@reduxjs/toolkit/dist/query';
 
 // @ts-ignore
-const Example3 = (await import('example3/AppCompat')).default;
+const Example3 = (await import('example3/App')).default;
 
 const propTypes = {
     a: PropTypes.bool,

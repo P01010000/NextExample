@@ -11,7 +11,23 @@ module.exports = {
             remotes: {
                 example3: isServer
                     ? 'example3@https://chayns.space/77890-17410/example3/node/remoteEntry.js'
-                    : 'example3@https://chayns.space/77890-17410/example3/web/remoteEntry.js'
+                    //This is a hack (I cannot run successfully MF in client-side with NextJS and React, maybe doing smth wrong)
+                    : {
+                        external: `external new Promise((r, j) => {
+                            window['example3'].init({
+                                react: {
+                                "${require('./package.json').dependencies.react}": {
+                                    get: () => Promise.resolve().then(() => () => globalThis.React),
+                                }
+                                }
+                            });
+                            r({
+                                get: (request) => window['example3'].get(request),
+                                init: (args) => {}
+                            });
+                        })`
+                    }
+                // : 'example3@http://localhost:3000/example3/web/remoteEntry.js'
             },
             shared: {
                 react: {
