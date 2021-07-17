@@ -13,6 +13,7 @@ import Pokemon from '../components/pokemon/Pokemon';
 import DynamicModuleBoundary from '../components/dynamicModule/DynamicModuleBoundary';
 import { pokemonApi } from '../services/pokemon/pokemon';
 import { QueryStatus } from '@reduxjs/toolkit/dist/query';
+import reduxMiddleware from '../middlewares/reduxMiddleware';
 
 
 const propTypes = {
@@ -80,18 +81,19 @@ Dynamic.displayName = 'Dynamic';
 
 export default Dynamic;
 
+
+
 const getServerSideProps: GetServerSideProps<DynamicProps> = async ({ req, res }) => {
-    const reduxStore = initializeStore();
-    const { dispatch } = reduxStore;
+    const { dispatch, getState, subscribe } = req.reduxStore!;
 
     dispatch(tick({ light: false, lastUpdate: Date.now() }));
 
     dispatch(pokemonApi.util.prefetch('getPokemonList', { offset: 0, limit: 151 }, {}));
 
     await new Promise<void>((resolve, reject) => {
-        let listener = reduxStore.subscribe(() => {
+        let listener = subscribe(() => {
             const getPokemonList = pokemonApi.endpoints.getPokemonList.select({ offset: 0, limit: 151 });
-            const pokemonList = getPokemonList(reduxStore.getState());
+            const pokemonList = getPokemonList(getState());
             listener();
             if (pokemonList.status === QueryStatus.fulfilled) {
                 resolve();
@@ -101,9 +103,9 @@ const getServerSideProps: GetServerSideProps<DynamicProps> = async ({ req, res }
         });
     });
 
-    return { props: { initialReduxState: reduxStore.getState(), a: Math.random() < 0.5 } }
+    return { props: { a: Math.random() < 0.5 } }
 }
 
-const withMiddleware = applyMiddlewares(getServerSideProps, loggerMiddleware);
+const withMiddleware = applyMiddlewares(getServerSideProps, loggerMiddleware, reduxMiddleware);
 
 export { withMiddleware as getServerSideProps };

@@ -1,5 +1,6 @@
 module.exports = {
     reactStrictMode: true,
+    poweredByHeader: false,
     webpack: (config, options) => {
         const { ModuleFederationPlugin } = options.webpack.container;
 
