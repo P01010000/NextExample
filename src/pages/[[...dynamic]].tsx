@@ -2,7 +2,7 @@ import { FunctionComponent, useCallback, useState } from 'react';
 import type { GetServerSideProps } from 'next';
 
 import PropTypes, { InferProps } from 'prop-types';
-import { initializeStore, AppDispatch } from '../store';
+import { AppDispatch } from '../store';
 import { useExampleStateValue, useLastUpdate } from '../store/example/selector';
 import { decrement, increment, reset, tick } from '../store/example/actions';
 import { useDispatch } from 'react-redux';

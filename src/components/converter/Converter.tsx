@@ -12,8 +12,10 @@ const Converter: FunctionComponent = () => {
 
         const stream = new EventSource('/api/sse');
 
-        stream.addEventListener('progress', (_ev) => {
-            const ev = _ev as MessageEvent;
+        stream.addEventListener('progress', (ev) => {
+            if (!(ev instanceof MessageEvent)) {
+                return;
+            }
             const data = Number.parseInt(ev.data, 10);
             setProgress(data);
             if (data >= 100) {
@@ -32,9 +34,9 @@ const Converter: FunctionComponent = () => {
     return (
         <div>
             {isConverting ? (
-                <div>Konvertiere... {progress} %</div>
+                <div>Converting... {progress} %</div>
             ) : (
-                <button onClick={onClick} style={{ backgroundColor: 'blue' }}>Konvertieren</button>
+                <button onClick={onClick} style={{ backgroundColor: 'blue' }}>Convert</button>
             )}
         </div>
     )
