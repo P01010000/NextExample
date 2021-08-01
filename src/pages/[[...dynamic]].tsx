@@ -14,6 +14,10 @@ import DynamicModuleBoundary from '../components/dynamicModule/DynamicModuleBoun
 import { pokemonApi } from '../services/pokemon/pokemon';
 import { QueryStatus } from '@reduxjs/toolkit/dist/query';
 import reduxMiddleware from '../middlewares/reduxMiddleware';
+import authMiddleware from '../middlewares/authMiddleware';
+import redirectMiddleware from '../middlewares/redirectMiddleware';
+import Login from '../components/login/Login';
+import { useUser } from '../store/user/selector';
 
 
 const propTypes = {
@@ -43,6 +47,7 @@ const remote2 = {
 const Dynamic: FunctionComponent<DynamicProps> = ({ a }) => {
     const dispatch = useDispatch<AppDispatch>();
     const [system, setSystem] = useState(remote1);
+    const user = useUser();
     const lastUpdate = useLastUpdate();
     const count = useExampleStateValue('count');
     const light = useExampleStateValue('light');
@@ -53,7 +58,8 @@ const Dynamic: FunctionComponent<DynamicProps> = ({ a }) => {
 
     return (
         <div>
-            <div>Hello {String(a)}</div>
+            <div>Hello {user.isAuthenticated ? user.firstName : String(a)}</div>
+            <Login/>
             <p>lastUpdate: {lastUpdate}</p>
             <p>count: {count}</p>
             <p>light: {String(light)}</p>
@@ -106,6 +112,6 @@ const getServerSideProps: GetServerSideProps<DynamicProps> = async ({ req, res }
     return { props: { a: Math.random() < 0.5 } }
 }
 
-const withMiddleware = applyMiddlewares(getServerSideProps, loggerMiddleware, reduxMiddleware);
+const withMiddleware = applyMiddlewares(getServerSideProps, loggerMiddleware, reduxMiddleware, redirectMiddleware, authMiddleware);
 
 export { withMiddleware as getServerSideProps };
