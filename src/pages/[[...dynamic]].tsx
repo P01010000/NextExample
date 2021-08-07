@@ -1,6 +1,7 @@
-import { FunctionComponent, useCallback, useState } from 'react';
+import React, { FunctionComponent, useCallback, useState } from 'react';
 import type { GetServerSideProps } from 'next';
 
+import Link from 'next/link';
 import PropTypes, { InferProps } from 'prop-types';
 import { AppDispatch } from '../store';
 import { useExampleStateValue, useLastUpdate } from '../store/example/selector';
@@ -22,6 +23,7 @@ import { useUser } from '../store/user/selector';
 
 const propTypes = {
     a: PropTypes.bool,
+    siteId: PropTypes.string,
 }
 
 const defaultProps = {
@@ -44,7 +46,7 @@ const remote2 = {
     scope: 'example2'
 };
 
-const Dynamic: FunctionComponent<DynamicProps> = ({ a }) => {
+const Dynamic: FunctionComponent<DynamicProps> = ({ a, siteId }) => {
     const dispatch = useDispatch<AppDispatch>();
     const [system, setSystem] = useState(remote1);
     const user = useUser();
@@ -59,7 +61,7 @@ const Dynamic: FunctionComponent<DynamicProps> = ({ a }) => {
     return (
         <div>
             <div>Hello {user.isAuthenticated ? user.firstName : String(a)}</div>
-            <Login/>
+            <Login siteId={siteId ?? undefined}/>
             <p>lastUpdate: {lastUpdate}</p>
             <p>count: {count}</p>
             <p>light: {String(light)}</p>
@@ -70,6 +72,7 @@ const Dynamic: FunctionComponent<DynamicProps> = ({ a }) => {
             </div>
             <Converter />
             <Pokemon />
+            <Link href={`/${siteId}/test`}>Test</Link>
             <div>
                 <button onClick={switchRemote}>Switch Remote</button>
             </div>
@@ -109,7 +112,7 @@ const getServerSideProps: GetServerSideProps<DynamicProps> = async ({ req, res }
         });
     });
 
-    return { props: { a: Math.random() < 0.5 } }
+    return { props: { a: Math.random() < 0.5, siteId: req.state?.site?.siteId || null } }
 }
 
 const withMiddleware = applyMiddlewares(getServerSideProps, loggerMiddleware, reduxMiddleware, redirectMiddleware, authMiddleware);

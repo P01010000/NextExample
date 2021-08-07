@@ -1,5 +1,5 @@
 import { createReducer } from '@reduxjs/toolkit';
-import { loginUserAction, setUser } from './actions';
+import { loginUserAction, setUser, updateUserToken } from './actions';
 
 export type UserReducerState = {
     personId: string,
@@ -39,6 +39,9 @@ const reducer = createReducer<UserReducerState>(initialState, (builder) => {
             ...action.payload,
             isAuthenticated: true,
         };
+    });
+    builder.addCase(updateUserToken, (state, action) => {
+        state.token = action.payload;
     });
 });
 

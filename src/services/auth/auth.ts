@@ -75,3 +75,7 @@ export const invalidateToken = (token: string) => {
 export const invalidateJti = (jti: string, exp: number) => {
     blacklist.set(jti, exp);
 }
+
+export const getBlacklist = (): { [key: string]: number} => {
+    return blacklist.mget(blacklist.keys())
+}

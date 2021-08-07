@@ -1,8 +1,11 @@
 import { createAction, createAsyncThunk } from '@reduxjs/toolkit';
 import type { JwtPayload } from 'jsonwebtoken';
-import { LOGIN_USER, SET_USER } from './types';
+import { LOGIN_USER, SET_USER, UPDATE_USER_TOKEN } from './types';
 
-export const loginUserAction = createAsyncThunk<{ token: string, payload: JwtPayload } | null, { eMail: string, password: string }>(LOGIN_USER, async ({ eMail, password }) => {
+export const loginUserAction = createAsyncThunk<
+    { token: string, payload: JwtPayload } | null,
+    { eMail: string, password: string, siteId?: string }
+>(LOGIN_USER, async ({ eMail, password, siteId }) => {
     const credentials = btoa(`${eMail}:${password}`);
 
     const res = await fetch('/api/auth/token', {
@@ -12,7 +15,7 @@ export const loginUserAction = createAsyncThunk<{ token: string, payload: JwtPay
             authorization: `basic ${credentials}`,
             'content-type': 'application/json'
         },
-        body: JSON.stringify({ siteId: '77890-17410' }),
+        body: JSON.stringify({ siteId: siteId ?? '77890-17410' }),
     });
     if (res.ok) {
         const token = await res.text();
@@ -27,3 +30,5 @@ export const loginUserAction = createAsyncThunk<{ token: string, payload: JwtPay
 });
 
 export const setUser = createAction<{ firstName: string, lastName: string, personId: string, groups: number[], token: string} | null>(SET_USER);
+
+export const updateUserToken = createAction<string>(UPDATE_USER_TOKEN);

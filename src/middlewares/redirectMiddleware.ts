@@ -39,7 +39,7 @@ const redirectMiddleware: GetServerSidePropsMiddleware = (next) => async (ctx) =
     if (url.hostname === 'localhost') {
         req.state = req.state ?? {};
         req.state.site = {
-            siteId: url.pathname.split('/')[1],
+            siteId: url.searchParams.get('dynamic') ?? url.pathname.split('/')[1],
             domain: url.hostname,
         }
     }

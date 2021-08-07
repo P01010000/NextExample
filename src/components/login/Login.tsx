@@ -1,15 +1,42 @@
-import React, { FC, useCallback, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../store';
-import { loginUserAction, setUser } from '../../store/user/actions';
+import { loginUserAction, setUser, updateUserToken } from '../../store/user/actions';
 import { useUser } from '../../store/user/selector';
 
-const Login: FC = () => {
+const Login: FC<{ siteId?: string }> = ({ siteId }) => {
     const dispatch = useDispatch<AppDispatch>();
     const user = useUser();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [show, setShow] = useState(false);
+
+    useEffect(() => {
+        const token = user.token;
+        if (!token) return;
+
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const exp = payload.exp;
+
+        const renewToken = async () => {
+            const res = await fetch('/api/auth/renew', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(token) });
+            if (res.ok) {
+                const token = await res.text();
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                const exp = payload.exp;
+                document.cookie = `at_${payload.siteId}=${token};exp=${new Date(exp * 1000).toUTCString()};path=/${siteId}/`;
+
+                dispatch(updateUserToken(token));
+            } else {
+                dispatch(setUser(null));
+            }
+        }
+
+        console.debug('start timeout', new Date((exp - 60) * 1000), (exp - 60) * 1000 - Date.now());
+        const timeout = setTimeout(renewToken, (exp - 60) * 1000 - Date.now());
+
+        return () => clearTimeout(timeout);
+    }, [user.token, dispatch, siteId]);
 
     const onClick = useCallback(async () => {
         if (user.isAuthenticated) {
@@ -21,13 +48,13 @@ const Login: FC = () => {
     }, [user, dispatch]);
 
     const onConfirm = useCallback(async () => {
-        const res = await dispatch(loginUserAction({ eMail: email, password }));
+        const res = await dispatch(loginUserAction({ eMail: email, password, siteId }));
         if (res.meta.requestStatus === 'fulfilled') {
             setShow(false);
             setEmail('');
             setPassword('');
         }
-    }, [email, password, dispatch]);
+    }, [siteId, email, password, dispatch]);
 
     return (
         <>
