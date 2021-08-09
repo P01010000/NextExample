@@ -72,6 +72,7 @@ const Dynamic: FunctionComponent<DynamicProps> = ({ a, siteId }) => {
             </div>
             <Converter />
             <Pokemon />
+            <Login siteId={siteId ?? undefined}/>
             <Link href={`/${siteId}/test`}>Test</Link>
             <div>
                 <button onClick={switchRemote}>Switch Remote</button>

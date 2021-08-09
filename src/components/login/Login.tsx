@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../store';
 import { loginUserAction, setUser, updateUserToken } from '../../store/user/actions';
 import { useUser } from '../../store/user/selector';
+import Modal, { useModal } from '../modal/Modal';
 
 const Login: FC<{ siteId?: string }> = ({ siteId }) => {
     const dispatch = useDispatch<AppDispatch>();
@@ -10,6 +11,8 @@ const Login: FC<{ siteId?: string }> = ({ siteId }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [show, setShow] = useState(false);
+    const { isShowing, toggle } = useModal();
+    const { isShowing: isShowing2, toggle: toggle2 } = useModal();
 
     useEffect(() => {
         const token = user.token;
@@ -43,18 +46,18 @@ const Login: FC<{ siteId?: string }> = ({ siteId }) => {
             await fetch('/api/auth/invalidate', { method: 'POST', credentials: 'include' });
             dispatch(setUser(null));
         } else {
-            setShow(true);
+            toggle();
         }
-    }, [user, dispatch]);
+    }, [user, dispatch, toggle]);
 
     const onConfirm = useCallback(async () => {
         const res = await dispatch(loginUserAction({ eMail: email, password, siteId }));
         if (res.meta.requestStatus === 'fulfilled') {
-            setShow(false);
+            toggle();
             setEmail('');
             setPassword('');
         }
-    }, [siteId, email, password, dispatch]);
+    }, [siteId, email, password, dispatch, toggle]);
 
     return (
         <>
@@ -63,6 +66,29 @@ const Login: FC<{ siteId?: string }> = ({ siteId }) => {
             >
                 {user.isAuthenticated ? 'Logout' : 'Login'}
             </button>
+            <Modal
+                isShowing={isShowing}
+                hide={toggle}
+            >
+                <h2 style={{ marginTop: 0 }}>Login Modal</h2>
+                <div>
+                    <input placeholder="eMail" onChange={ev => setEmail(ev.target.value)} value={email} />
+                </div>
+                <div>
+                    <input placeholder="password" onChange={ev => setPassword(ev.target.value)} value={password} type="password" onKeyDown={ev => ev.key === 'Enter' && onConfirm()}/>
+                </div>
+                <div style={{ textAlign: 'center' }}>
+                    <button onClick={onConfirm}>Login</button><button onClick={toggle2}>Help</button>
+                </div>
+            </Modal>
+            <Modal
+                isShowing={isShowing2}
+                hide={toggle2}
+            >
+                <div>
+                    Testing to stack dialogs
+                </div>
+            </Modal>
             {show && (
                 <div style={{
                     position: 'fixed',
