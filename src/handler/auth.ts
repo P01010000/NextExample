@@ -9,7 +9,7 @@ type AuthHandlerResponse = {
 
 const authHandler = async ({ req, res }: GetServerSidePropsContext | { req: NextApiRequest, res: NextApiResponse }): Promise<AuthHandlerResponse> => {
     const cookies = req.cookies;
-    const siteId = req.state?.site?.siteId ?? new URL(req.headers.referer!).pathname.split('/')[1];
+    const siteId = req.state?.site?.siteId ?? (req.headers.referer ? new URL(req.headers.referer).pathname.split('/')[1] : null);
     
     if (!siteId) return null;
 

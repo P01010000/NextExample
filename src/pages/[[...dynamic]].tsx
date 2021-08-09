@@ -1,6 +1,7 @@
 import React, { FunctionComponent, useCallback, useState } from 'react';
 import type { GetServerSideProps } from 'next';
 
+import Head from 'next/head';
 import Link from 'next/link';
 import PropTypes, { InferProps } from 'prop-types';
 import { AppDispatch } from '../store';
@@ -60,8 +61,10 @@ const Dynamic: FunctionComponent<DynamicProps> = ({ a, siteId }) => {
 
     return (
         <div>
-            <div>Hello {user.isAuthenticated ? user.firstName : String(a)}</div>
-            <Login siteId={siteId ?? undefined}/>
+            <Head>
+                <link rel="search" type="application/opensearchdescription+xml" href="/opensearchdescription.xml"/>
+            </Head>
+            <div style={{ position: 'sticky', top: 0, backgroundColor: '#0007', backdropFilter: 'blur(3px)' }}>Hello {user.isAuthenticated ? user.firstName : String(a)}</div>
             <p>lastUpdate: {lastUpdate}</p>
             <p>count: {count}</p>
             <p>light: {String(light)}</p>
