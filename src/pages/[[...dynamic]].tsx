@@ -65,6 +65,7 @@ const Dynamic: FunctionComponent<DynamicProps> = ({ a, siteId }) => {
                 <link rel="search" type="application/opensearchdescription+xml" href="/opensearchdescription.xml"/>
             </Head>
             <div style={{ position: 'sticky', top: 0, backgroundColor: '#0007', backdropFilter: 'blur(3px)' }}>Hello {user.isAuthenticated ? user.firstName : String(a)}</div>
+            <Login siteId={siteId ?? undefined}/>
             <p>lastUpdate: {lastUpdate}</p>
             <p>count: {count}</p>
             <p>light: {String(light)}</p>
@@ -75,7 +76,6 @@ const Dynamic: FunctionComponent<DynamicProps> = ({ a, siteId }) => {
             </div>
             <Converter />
             <Pokemon />
-            <Login siteId={siteId ?? undefined}/>
             <Link href={`/${siteId}/test`}>Test</Link>
             <div>
                 <button onClick={switchRemote}>Switch Remote</button>
