@@ -78,6 +78,19 @@ const Dynamic: FunctionComponent<DynamicProps> = ({ a, siteId }) => {
         console.log('choice', choice);
     }, []);
 
+    const onNotificationButtonClick = useCallback(() => {
+        Notification.requestPermission(async (result) => {
+            if (result === 'granted') {
+                const sw = await navigator.serviceWorker.getRegistration();
+                if (sw) {
+                    sw.showNotification('Next Example App', {
+                        body: 'This is an test notification',
+                    });
+                }
+            }
+        })
+    }, []);
+
     return (
         <div>
             <Head>
@@ -95,7 +108,10 @@ const Dynamic: FunctionComponent<DynamicProps> = ({ a, siteId }) => {
                 <button style={{ backgroundColor: 'red' }} onClick={() => dispatch(decrement())}>Decrement</button>
                 <button style={{ backgroundColor: 'gray' }} onClick={() => dispatch(reset())}>Reset</button>
             </div>
-            <button onClick={onInstall}>Install</button>
+            <div>
+                <button onClick={onInstall}>Install</button>
+                <button onClick={onNotificationButtonClick}>Send Notification</button>
+            </div>
             <Converter />
             <Pokemon />
             <Link href={`/${siteId}/test`}>Test</Link>
