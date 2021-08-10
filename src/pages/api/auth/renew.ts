@@ -26,7 +26,7 @@ const post = async (req: NextApiRequest, res: NextApiResponse) => {
         return res.end(ex.message);
     }
 
-    payload.groups = await new UserGroupRepository(payload.siteId).getUserGroups(payload.siteId);
+    payload.groups = await new UserGroupRepository(payload.siteId).getUserGroups(subject!);
 
     const newToken = sign(payload, {
         expiresIn: '15m',

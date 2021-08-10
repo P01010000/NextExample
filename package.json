@@ -7,7 +7,7 @@
     "build": "npm run schema && next build",
     "start": "next start",
     "lint": "next lint",
-    "schema": "ts-generate-schema **/*.response.dto.ts",
+    "schema": "ts-generate-schema \"**/*.@(request|response).dto.ts\"",
     "test": "jest",
     "test:watch": "npm test -- --watch"
   },

@@ -4,7 +4,7 @@ import { AppDispatch } from '../../store';
 import { loginUserAction, setUser, updateUserToken } from '../../store/user/actions';
 import { useUser } from '../../store/user/selector';
 import Modal, { useModal } from '../modal/Modal';
-import { LoginButton, LoginButtonWrapper, LoginHeadline, SignInButtonWrapper } from './style';
+import { LoginButton, LoginButtonWrapper, LoginHeadline, SignInButtonWrapper } from './Login.style';
 
 const Login: FC<{ siteId?: string }> = ({ siteId }) => {
     const dispatch = useDispatch<AppDispatch>();
@@ -27,7 +27,7 @@ const Login: FC<{ siteId?: string }> = ({ siteId }) => {
                 const token = await res.text();
                 const payload = JSON.parse(atob(token.split('.')[1]));
                 const exp = payload.exp;
-                document.cookie = `at_${payload.siteId}=${token};exp=${new Date(exp * 1000).toUTCString()};path=/${siteId}/`;
+                document.cookie = `at_${payload.siteId}=${token};exp=${new Date(exp * 1000).toUTCString()};path=/${siteId}`;
 
                 dispatch(updateUserToken(token));
             } else {

@@ -1,6 +1,6 @@
 import React, { FC, MouseEventHandler, useCallback, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
-import { ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, ModalWrapper } from './style';
+import { ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, ModalWrapper } from './Modal.style';
 
 export const useModal = () => {
     const [isShowing, setIsShowing] = useState(false);
