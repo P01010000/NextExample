@@ -63,6 +63,15 @@ const Dynamic: FunctionComponent<DynamicProps> = ({ a, siteId }) => {
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js');
         }
+        window.addEventListener('beforeinstallprompt', ev => {
+            console.log('beforeinstall prompt');
+            ev.preventDefault();
+            setTimeout(async () => {
+                ev.prompt();
+                const choice = await ev.userChoice;
+                console.log('choice', choice);
+            }, 1000);
+        });
     }, []);
 
     return (
