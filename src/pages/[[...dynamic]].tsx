@@ -67,8 +67,8 @@ const Dynamic: FunctionComponent<DynamicProps> = ({ a, siteId }) => {
             console.log('beforeinstall prompt');
             ev.preventDefault();
             setTimeout(async () => {
-                ev.prompt();
-                const choice = await ev.userChoice;
+                (ev as any).prompt();
+                const choice = await (ev as any).userChoice;
                 console.log('choice', choice);
             }, 1000);
         });
