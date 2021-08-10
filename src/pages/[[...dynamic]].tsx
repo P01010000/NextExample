@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, { FunctionComponent, useCallback, useEffect, useRef, useState } from 'react';
 import type { GetServerSideProps } from 'next';
 
 import Head from 'next/head';
@@ -54,6 +54,7 @@ const Dynamic: FunctionComponent<DynamicProps> = ({ a, siteId }) => {
     const lastUpdate = useLastUpdate();
     const count = useExampleStateValue('count');
     const light = useExampleStateValue('light');
+    const deferredEvent = useRef<Event>();
 
     const switchRemote = useCallback(() => {
         setSystem(system.scope === remote1.scope ? remote2 : remote1);
@@ -66,12 +67,15 @@ const Dynamic: FunctionComponent<DynamicProps> = ({ a, siteId }) => {
         window.addEventListener('beforeinstallprompt', ev => {
             console.log('beforeinstall prompt');
             ev.preventDefault();
-            setTimeout(async () => {
-                (ev as any).prompt();
-                const choice = await (ev as any).userChoice;
-                console.log('choice', choice);
-            }, 1000);
+            deferredEvent.current = ev;
         });
+    }, []);
+
+    const onInstall = useCallback(async () => {
+        if (!deferredEvent.current) return;
+        (deferredEvent.current as any).prompt();
+        const choice = await (deferredEvent.current as any).choice;
+        console.log('choice', choice);
     }, []);
 
     return (
@@ -91,6 +95,7 @@ const Dynamic: FunctionComponent<DynamicProps> = ({ a, siteId }) => {
                 <button style={{ backgroundColor: 'red' }} onClick={() => dispatch(decrement())}>Decrement</button>
                 <button style={{ backgroundColor: 'gray' }} onClick={() => dispatch(reset())}>Reset</button>
             </div>
+            <button onClick={onInstall}>Install</button>
             <Converter />
             <Pokemon />
             <Link href={`/${siteId}/test`}>Test</Link>
