@@ -1,0 +1,21 @@
+{
+    "name": "Next Example App",
+    "short_name": "Next Example",
+    "icons": [
+      {
+        "src": "/icon-192.jpg",
+        "type": "image/jpg",
+        "sizes": "192x192"
+      },
+      {
+        "src": "/icon-512.jpg",
+        "type": "image/jpg",
+        "sizes": "512x512"
+      }
+    ],
+    "background_color": "#ffffff",
+    "description": "Next.js project to try stuff",
+    "display": "standalone",
+    "start_url": "/",
+    "theme_color": "#000"
+  }

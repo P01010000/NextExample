@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useCallback, useState } from 'react';
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import type { GetServerSideProps } from 'next';
 
 import Head from 'next/head';
@@ -59,12 +59,19 @@ const Dynamic: FunctionComponent<DynamicProps> = ({ a, siteId }) => {
         setSystem(system.scope === remote1.scope ? remote2 : remote1);
     }, [system]);
 
+    useEffect(() => {
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+    }, []);
+
     return (
         <div>
             <Head>
+                <link rel="manifest" href="/manifest.json"/>
                 <link rel="search" type="application/opensearchdescription+xml" href="/opensearchdescription.xml"/>
             </Head>
-            <div style={{ position: 'sticky', top: 0, backgroundColor: '#0007', backdropFilter: 'blur(3px)' }}>Hello {user.isAuthenticated ? user.firstName : String(a)}</div>
+            <div style={{ position: 'sticky', top: 0, backgroundColor: '#0007', backdropFilter: 'blur(3px)', zIndex: 100 }}>Hello {user.isAuthenticated ? user.firstName : String(a)}</div>
             <Login siteId={siteId ?? undefined}/>
             <p>lastUpdate: {lastUpdate}</p>
             <p>count: {count}</p>
