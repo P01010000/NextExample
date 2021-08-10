@@ -77,6 +77,7 @@ const Dynamic: FunctionComponent<DynamicProps> = ({ a, siteId }) => {
     return (
         <div>
             <Head>
+                <title>Next example app</title>
                 <link rel="manifest" href="/manifest.json"/>
                 <link rel="search" type="application/opensearchdescription+xml" href="/opensearchdescription.xml"/>
             </Head>
