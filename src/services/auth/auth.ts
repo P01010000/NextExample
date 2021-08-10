@@ -29,6 +29,14 @@ const loadKeys = async () => {
             publicKey,
         }
     }
+
+    if (process.env.PUBLIC_KEY && process.env.PRIVATE_KEY) {
+        return {
+            privateKey: process.env.PRIVATE_KEY,
+            publicKey: process.env.PUBLIC_KEY,
+        }
+    }
+
     const ecdh = crypto.createECDH('secp256k1');
     ecdh.generateKeys();
     const { privateKey, publicKey } = createPemFromKey(ecdh);
