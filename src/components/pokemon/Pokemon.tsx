@@ -11,10 +11,6 @@ const Pokemon: FunctionComponent = () => {
     const [value, setValue] = useState('');
     const [search, setSearch] = useState('');
     
-    useEffect(() => {
-        dispatch(pokemonApi.endpoints.getPokemonList.initiate({ offset: 0, limit: 151 }));
-    }, [dispatch]);
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const searchPokemon = useCallback(debounce((value: string) => {
         setSearch(value);
@@ -22,6 +18,16 @@ const Pokemon: FunctionComponent = () => {
             dispatch(pokemonApi.endpoints.getPokemonByName.initiate(value));
         }
     }, 400), [dispatch])
+    
+    useEffect(() => {
+        dispatch(pokemonApi.endpoints.getPokemonList.initiate({ offset: 0, limit: 151 }));
+        const search = new URLSearchParams(location.search).get('search') ?? '';
+        if (search) {
+            setValue(search);
+            setSearch(search);
+            searchPokemon(search);
+        }
+    }, [dispatch, searchPokemon]);
 
     const onChange = useCallback((ev) => {
         const value = ev.target.value.toLowerCase();
