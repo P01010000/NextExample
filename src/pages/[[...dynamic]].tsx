@@ -91,6 +91,23 @@ const Dynamic: FunctionComponent<DynamicProps> = ({ a, siteId }) => {
         })
     }, []);
 
+    const sendPush = useCallback(async () => {
+        if ('SyncManager' in window) {
+            const reg = await navigator.serviceWorker.getRegistration();
+            if (reg) {
+                reg.sync.register('myFirstSync');
+            }
+        } else {
+            fetch(`/api/push/broadcast`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify('Hello Me'),
+            });
+        }
+    }, []);
+
     return (
         <div>
             <Head>
@@ -111,6 +128,7 @@ const Dynamic: FunctionComponent<DynamicProps> = ({ a, siteId }) => {
             <div>
                 <button onClick={onInstall}>Install</button>
                 <button onClick={onNotificationButtonClick}>Send Notification</button>
+                <button onClick={sendPush}>Send Push</button>
             </div>
             <Converter />
             <Pokemon />
