@@ -327,7 +327,8 @@ export default async function handler(
                     }
                 } else {
                     // naive version
-                    svgPath += `<path d="M${i * width + offset} ${j * width + offset}h${width}v${width}h${-width}z" fill="#000"/>`;
+                    // svgPath += `<path d="M${i * width + offset} ${j * width + offset}h${width}v${width}h${-width}z" fill="#000"/>`;
+                    dataPath += `M${i * width + offset} ${j * width + offset}h${width}v${width}h${-width}z`;
                 }
             }
         }
@@ -342,6 +343,7 @@ export default async function handler(
     if (format === 'svg') {
         res.setHeader('Content-Type', 'image/svg+xml');
         res.end(svg);
+        return;
     }
 
     const buffer = await new Promise((resolve) => {
