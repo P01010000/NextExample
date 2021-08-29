@@ -284,7 +284,7 @@ export default async function handler(
     let svgPath = circle
         ? `<path d="m584 0a584 584 0 1 0 0 1168A584 584 0 1 0 584 0z" fill="#fff"/>`
         : `<path d="M0 0h${viewport}v${viewport}H0z" fill="#fff"/>`;
-    const angle1 = Math.atan(Math.tan(3 * Math.PI / 180) * 424 / 548) * 180 / Math.PI;
+    const angle1 = Math.asin(Math.sin(3 * Math.PI / 180) * 424 / 548) * 180 / Math.PI;
     const angle2 = 72 - angle1;
     let circlePath = '';
     for (let i = 0; i < 5 && circle; i++) {
