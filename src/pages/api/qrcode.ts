@@ -60,7 +60,7 @@ const convertSegmentToCornerList = (segment: [number, number, number][]) => {
             case 0: {
                 // top
                 let startIndex = -1;
-                for (let i = 0; i < list.length - 1; i++) {
+                for (let i = list.length - 2; i >= 0; i--) {
                     const [x1, y1] = list[i];
                     const [x2, y2] = list[i + 1];
                     if (x1 === cRow && y1 === cCol + 1 && x2 === cRow + 1 && y2 === cCol + 1) {
@@ -76,7 +76,7 @@ const convertSegmentToCornerList = (segment: [number, number, number][]) => {
             case 1: {
                 // right
                 let startIndex = -1;
-                for (let i = 0; i < list.length - 1; i++) {
+                for (let i = list.length - 2; i >= 0; i--) {
                     const [x1, y1] = list[i];
                     const [x2, y2] = list[i + 1];
                     if (x1 === cRow && y1 === cCol && x2 === cRow && y2 === cCol + 1) {
@@ -92,7 +92,7 @@ const convertSegmentToCornerList = (segment: [number, number, number][]) => {
             case 2: {
                 // bottom
                 let startIndex = -1;
-                for (let i = 0; i < list.length - 1; i++) {
+                for (let i = list.length - 2; i >= 0; i--) {
                     const [x1, y1] = list[i];
                     const [x2, y2] = list[i + 1];
                     if (x1 === cRow + 1 && y1 === cCol && x2 === cRow && y2 === cCol) {
@@ -108,7 +108,7 @@ const convertSegmentToCornerList = (segment: [number, number, number][]) => {
             case 3: {
                 // left
                 let startIndex = -1;
-                for (let i = 0; i < list.length - 1; i++) {
+                for (let i = list.length - 2; i >= 0; i--) {
                     const [x1, y1] = list[i];
                     const [x2, y2] = list[i + 1];
                     if (x1 === cRow + 1 && y1 === cCol + 1 && x2 === cRow + 1 && y2 === cCol) {
@@ -280,7 +280,7 @@ export default async function handler(
     let width = viewport / (code.modules.size + 4);
     let offset = (viewport - code.modules.size * width) / 2 + (circle ? 294 : 0);
     let svgPath = circle
-        ? `<path d="m584 0a584 584 0 1 0 0 1168 584 584 0 1 0 0 -1168m584 0" fill="#fff"/>`
+        ? `<path d="m584 0a584 584 0 1 0 0 1168A584 584 0 1 0 584 0z" fill="#fff"/>`
         : `<path d="M0 0h${viewport}v${viewport}H0z" fill="#fff"/>`;
     const angle1 = Math.atan(Math.tan(3 * Math.PI / 180) * 424 / 548) * 180 / Math.PI;
     const angle2 = 72 - angle1;
@@ -304,22 +304,22 @@ export default async function handler(
                     if (segment.length) {
                         const list = convertSegmentToCornerList(segment)!;
                         optimizeCornerList(list);
-                        dataPath += convertCornerListToPath(list, offset, offset, width);
+                        dataPath += convertCornerListToPath(list);
                     }
                 } else {
                     // naive version
                     // svgPath += `<path d="M${i * width + offset} ${j * width + offset}h${width}v${width}h${-width}z" fill="#000"/>`;
-                    dataPath += `M${i * width + offset} ${j * width + offset}h${width}v${width}h${-width}z`;
+                    dataPath += `M${i} ${j}h1v1h-1z`;
                 }
             }
         }
     }
     if (dataPath) {
-        svgPath += `<path d="${dataPath}" fill="#000"/>`;
+        svgPath += `<path d="${dataPath}" fill="#000" transform="translate(${offset},${offset}) scale(${width})"/>`;
     }
     console.log('duration', performance.now() - start);
 
-    const svg = `<svg version="1.2" baseProfile="tiny" viewBox="0 0 ${circle ? 1168 : 580} ${circle ? 1168 : 580}" viewport-fill="#fff" viewport-fill-opacity="1" fill="#000" fill-opacity="1" style="background-color:transparent" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">${svgPath}</svg>`;
+    const svg = `<?xml version="1.0" encoding="UTF-8"?><svg version="1.2" baseProfile="tiny" viewBox="0 0 ${circle ? 1168 : 580} ${circle ? 1168 : 580}" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">${svgPath}</svg>`;
 
     if (format === 'svg') {
         res.setHeader('Content-Type', 'image/svg+xml');
