@@ -333,11 +333,15 @@ export default async function handler(
         let iconPath = '';
         for (let i = 0; i < 10; i++) {
             for (let j = 0; j < 10; j++) {
-                const segment = DFS(i, j, iconBuffer, iconVisited, 10);
-                if (segment.length) {
-                    const list = convertSegmentToCornerList(segment)!;
-                    optimizeCornerList(list);
-                    iconPath += convertCornerListToPath(list, 0, 0, 1);
+                if (optimization) {
+                    const segment = DFS(i, j, iconBuffer, iconVisited, 10);
+                    if (segment.length) {
+                        const list = convertSegmentToCornerList(segment)!;
+                        optimizeCornerList(list);
+                        iconPath += convertCornerListToPath(list, 0, 0, 1);
+                    }
+                } else if (icon[j][i]) {
+                    iconPath += `M${i} ${j}h1v1h-1z`;
                 }
             }
         }
