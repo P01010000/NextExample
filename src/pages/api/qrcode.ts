@@ -5,11 +5,11 @@ import qrcode from 'qrcode';
 import { performance } from 'perf_hooks';
 
 
-const isValid = (vis: number[][], row: number, col: number, size: number) => {
+const isValid = (vis: Buffer, row: number, col: number, size: number) => {
     if (row < 0 || col < 0 || row >= size || col >= size) {
         return false;
     }
-    if (vis[row][col]) {
+    if (vis[row * size + col]) {
         return false;
     }
     return true;
@@ -18,7 +18,7 @@ const isValid = (vis: number[][], row: number, col: number, size: number) => {
 const dRow = [0, 1, 0, -1];
 const dCol = [-1, 0, 1, 0];
 
-const DFS = (row: number, col: number, grid: number[][], vis: number[][]) => {
+const DFS = (row: number, col: number, grid: Buffer, vis: Buffer, size: number) => {
     const stack: [number, number, number][] = [];
     stack.push([row, col, -1]);
 
@@ -27,15 +27,15 @@ const DFS = (row: number, col: number, grid: number[][], vis: number[][]) => {
     while (stack.length > 0) {
         const [cRow, cCol, direction] = stack.shift()!;
 
-        if (!isValid(vis, cRow, cCol, vis.length)) {
+        if (!isValid(vis, cRow, cCol, size)) {
             continue;
         }
 
-        if (!grid[cRow][cCol]) {
+        if (!grid[cRow * size + cCol]) {
             continue;
         }
 
-        vis[cRow][cCol] = 1;
+        vis[cRow * size + cCol] = 1;
         res.push([cRow, cCol, direction]);
 
         for (let i = 0; i < 4; i++) {
@@ -45,6 +45,7 @@ const DFS = (row: number, col: number, grid: number[][], vis: number[][]) => {
     return res;
 }
 
+// TODO: needs to be optimized
 const convertSegmentToCornerList = (segment: [number, number, number][]) => {
     if (segment.length === 0) {
         return null;
@@ -163,26 +164,6 @@ const convertCornerListToPath = (list: [number, number][], offsetX: number = 0, 
     return svgPath + 'z';
 }
 
-const convertBufferToMatrix = (buffer: Buffer, size: number): number[][] => {
-    const res = new Array(size);
-    for (let i = 0; i < size; i++) {
-        const arr = new Array(size);
-        res[i] = arr;
-        for (let j = 0; j < size; j++) {
-            arr[j] = buffer[i * size + j];
-        }
-    }
-    return res;
-}
-
-const createEmptyMatrix = (size: number): number[][] => {
-    const res = new Array(size);
-    for (let i = 0; i < size; i++) {
-        res[i] = new Array(size).fill(0);
-    }
-    return res;
-}
-
 const polarToCartesian = (centerX: number, centerY: number, radius: number, angleInDegrees: number) => {
     const angleInRadians = ((angleInDegrees - 90) * Math.PI) / 180.0;
 
@@ -272,8 +253,7 @@ export default async function handler(
 
     const code = await qrcode.create(value, { errorCorrectionLevel: 'H', version: value.length > 24 ? undefined : 4 });
 
-    const matrix = convertBufferToMatrix(code.modules.data, code.modules.size);
-    const visited = createEmptyMatrix(code.modules.size);
+    const visited = Buffer.alloc(code.modules.data.length, 0);
 
     const icon = [
         [0, 0, 0, 1, 0, 0, 1, 0, 1, 0],
@@ -292,7 +272,7 @@ export default async function handler(
         for (let j = 0; j < 10; j++) {
             const y = i + ((code.modules.size - 1) / 2) - 5;
             const x = j + ((code.modules.size + 1) / 2) - 5;
-            matrix[x][y] = icon[i][j];
+            code.modules.data[x * code.modules.size + y] = icon[i][j];
         }
     }
 
@@ -314,14 +294,15 @@ export default async function handler(
     }
     let dataPath = '';
     const start = performance.now();
-    for (let i = 0; i < code.modules.size; i++) {
-        for (let j = 0; j < code.modules.size; j++) {
-            if (matrix[i][j] && !visited[i][j]) {
+    const { data, size } = code.modules;
+    for (let i = 0; i < size; i++) {
+        for (let j = 0; j < size; j++) {
+            if (data[i * size + j] && !visited[i * size + j]) {
                 if (optimization) {
                     // optimized version with joined paths
-                    const res = DFS(i, j, matrix, visited);
-                    if (res.length || true) {
-                        const list = convertSegmentToCornerList(res)!;
+                    const segment = DFS(i, j, data, visited, size);
+                    if (segment.length) {
+                        const list = convertSegmentToCornerList(segment)!;
                         optimizeCornerList(list);
                         dataPath += convertCornerListToPath(list, offset, offset, width);
                     }
