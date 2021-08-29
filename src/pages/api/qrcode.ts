@@ -286,13 +286,17 @@ export default async function handler(
         : `<path d="M0 0h${viewport}v${viewport}H0z" fill="#fff"/>`;
     const angle1 = Math.atan(Math.tan(3 * Math.PI / 180) * 424 / 548) * 180 / Math.PI;
     const angle2 = 72 - angle1;
+    let circlePath = '';
     for (let i = 0; i < 5 && circle; i++) {
-        const corner1 = polarToCartesian(584, 584, 424, 72 * i + 3);
+        const corner1 = polarToCartesian(584, 584, 424, 72 * i + 3)
         const corner2 = polarToCartesian(584, 584, 424, 72 * i + 69);
         const corner3 = polarToCartesian(584, 584, 548, 72 * i + angle2);
         const corner4 = polarToCartesian(584, 584, 548, 72 * i + angle1);
 
-        svgPath += `<path d="M${corner1.x},${corner1.y}A424,424,0,0,1,${corner2.x},${corner2.y}L${corner3.x},${corner3.y}A548,548 0 0 0 ${corner4.x},${corner4.y}Z" fill="${color}"/>`;
+        circlePath += `M${corner1.x},${corner1.y}A424,424,0,0,1,${corner2.x},${corner2.y}L${corner3.x},${corner3.y}A548,548 0 0 0 ${corner4.x},${corner4.y}Z`;
+    }
+    if (circlePath) {
+        svgPath += `<path d="${circlePath}" fill="${color}"/>`;
     }
     let dataPath = '';
     const start = performance.now();
@@ -317,7 +321,7 @@ export default async function handler(
         }
     }
     if (dataPath) {
-        svgPath += `<path d="${dataPath}" fill="#000" transform="translate(${offset},${offset}) scale(${width})"/>`;
+        svgPath += `<path d="${dataPath}" transform="translate(${offset},${offset}) scale(${width})"/>`;
     }
     console.log('duration', performance.now() - start);
 
@@ -350,7 +354,7 @@ export default async function handler(
         svgPath += `<path d="${iconPath}" fill="${color}" transform="translate(${offsetX},${offsetY}) scale(${width})"/>`;
     }
 
-    const svg = `<?xml version="1.0" encoding="UTF-8"?><svg version="1.2" baseProfile="tiny" viewBox="0 0 ${circle ? 1168 : 580} ${circle ? 1168 : 580}" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">${svgPath}</svg>`;
+    const svg = `<?xml version="1.0" encoding="UTF-8"?><svg version="1.2" baseProfile="tiny" viewBox="0 0 ${circle ? 1168 : 580} ${circle ? 1168 : 580}" xmlns="http://www.w3.org/2000/svg">${svgPath}</svg>`;
 
     if (format === 'svg') {
         res.setHeader('Content-Type', 'image/svg+xml');
