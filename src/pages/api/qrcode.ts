@@ -366,7 +366,7 @@ export default async function handler(
         font-family: 'Roboto-Medium';
         font-weight: 500;
         font-style: normal;
-        src: local('Roboto Medium'), local('Roboto-Medium'), url(https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmEU9fBBc4.woff2) format('woff2'), url(data:application/x-font-woff;charset=utf-8;base64,${base64font}) format('woff2');
+        src: local('Roboto Medium'), local('Roboto-Medium'), url(https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmEU9fBBc4.woff2) format('woff2'), url(../RobotoMedium.ttf) format('truetype'), url(data:application/x-font-woff;charset=utf-8;base64,${base64font}) format('woff2');
     }
             </style>
             <path d="M 1059.0436379741525,372.4969456005839 A 520,520 0 0 0 638.3548008991798,66.84861440849784" id="curve0"/>
@@ -376,11 +376,11 @@ export default async function handler(
             <path d="M 529.6451991008203,66.84861440849784 A 520,520 0 0 0 108.95636202584745,372.4969456005841" id="curve4"/>
         </defs>`;
     
-        svgPath += '<text font-family="Roboto-Medium,Roboto" font-size="100" font-weight="500" letter-spacing=".04em" text-anchor="middle">';
+        // svgPath += '<text font-family="Roboto-Medium,Roboto" font-size="100" font-weight="500" letter-spacing=".04em" text-anchor="middle">';
         for (let i = 0; i < 5; i++) {
-            svgPath += `<textPath xlink:href="#curve${i}" startOffset="50%" fill="#fff">${text}</textPath>`;
+            svgPath += `<text font-family="Roboto-Medium,Roboto" font-size="100" font-weight="500" letter-spacing=".04em" text-anchor="middle"><textPath xlink:href="#curve${i}" startOffset="50%" fill="#fff">${text}</textPath></text>`;
         }
-        svgPath += '</text>';
+        // svgPath += '</text>';
     }
 
     const svg = `<?xml version="1.0" encoding="UTF-8"?><svg version="1.2" baseProfile="tiny" viewBox="0 0 ${circle ? 1168 : 580} ${circle ? 1168 : 580}" xmlns="http://www.w3.org/2000/svg"${text ? ' xmlns:xlink="http://www.w3.org/1999/xlink"' : ''}>${defs}${svgPath}</svg>`;
