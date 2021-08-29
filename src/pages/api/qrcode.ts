@@ -3,6 +3,11 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import svg2img from 'svg2img';
 import qrcode from 'qrcode';
 import { performance } from 'perf_hooks';
+import { registerFont } from 'canvas';
+import fs from 'fs';
+
+registerFont('./src/RobotoMedium.ttf', { family: 'Roboto-Medium' });
+const base64font = fs.readFileSync('./src/RobotoMedium.woff2', 'base64');
 
 
 const isValid = (vis: Buffer, row: number, col: number, size: number) => {
@@ -234,7 +239,7 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
-    const { value, width: exportWidth, color, optimization, circle, format } = parseParameters(req);
+    const { value, width: exportWidth, color, optimization, circle, format, text } = parseParameters(req);
 
     if (!value) {
         res.status(400);
@@ -354,7 +359,31 @@ export default async function handler(
         svgPath += `<path d="${iconPath}" fill="${color}" transform="translate(${offsetX},${offsetY}) scale(${width})"/>`;
     }
 
-    const svg = `<?xml version="1.0" encoding="UTF-8"?><svg version="1.2" baseProfile="tiny" viewBox="0 0 ${circle ? 1168 : 580} ${circle ? 1168 : 580}" xmlns="http://www.w3.org/2000/svg">${svgPath}</svg>`;
+    let defs = '';
+    if (text) {
+        defs = `<defs>
+        <style type="text/css">@font-face {
+        font-family: 'Roboto-Medium';
+        font-weight: 500;
+        font-style: normal;
+        src: local('Roboto Medium'), local('Roboto-Medium'), url(https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmEU9fBBc4.woff2) format('woff2'), url(data:application/x-font-woff;charset=utf-8;base64,${base64font}) format('woff2');
+    }
+            </style>
+            <path d="M 1059.0436379741525,372.4969456005839 A 520,520 0 0 0 638.3548008991798,66.84861440849784" id="curve0"/>
+            <path d="M 931.9479153066063,970.435309248245 A 520,520 0 0 0 1092.6367523815788,475.88592077476517" id="curve1"/>
+            <path d="M 324.0000000000001,1034.3332099679083 A 520,520 0 0 0 844,1034.333209967908" id="curve2"/>
+            <path d="M 75.36324761842104,475.8859207747653 A 520,520 0 0 0 236.05208469339374,970.435309248245" id="curve3"/>
+            <path d="M 529.6451991008203,66.84861440849784 A 520,520 0 0 0 108.95636202584745,372.4969456005841" id="curve4"/>
+        </defs>`;
+    
+        svgPath += '<text font-family="Roboto-Medium,Roboto" font-size="100" font-weight="500" letter-spacing=".04em" text-anchor="middle">';
+        for (let i = 0; i < 5; i++) {
+            svgPath += `<textPath xlink:href="#curve${i}" startOffset="50%" fill="#fff">${text}</textPath>`;
+        }
+        svgPath += '</text>';
+    }
+
+    const svg = `<?xml version="1.0" encoding="UTF-8"?><svg version="1.2" baseProfile="tiny" viewBox="0 0 ${circle ? 1168 : 580} ${circle ? 1168 : 580}" xmlns="http://www.w3.org/2000/svg"${text ? ' xmlns:xlink="http://www.w3.org/1999/xlink"' : ''}>${defs}${svgPath}</svg>`;
 
     if (format === 'svg') {
         res.setHeader('Content-Type', 'image/svg+xml');
