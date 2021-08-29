@@ -237,7 +237,7 @@ export default async function handler(
     const { value, width: exportWidth, color, optimization, circle, format } = parseParameters(req);
 
     if (!value) {
-        res.status(500);
+        res.status(400);
         res.end('Missing value');
         return;
     }
@@ -256,23 +256,25 @@ export default async function handler(
     const visited = Buffer.alloc(code.modules.data.length, 0);
 
     const icon = [
-        [0, 0, 0, 1, 0, 0, 1, 0, 1, 0],
-        [0, 1, 1, 1, 1, 0, 0, 0, 0, 1],
-        [0, 1, 1, 1, 0, 0, 1, 0, 1, 0],
-        [1, 1, 1, 0, 0, 0, 0, 1, 1, 0],
-        [0, 1, 0, 0, 1, 0, 1, 1, 1, 0],
-        [0, 0, 1, 0, 0, 0, 0, 1, 1, 0],
-        [1, 0, 0, 0, 1, 0, 0, 0, 1, 1],
-        [0, 1, 0, 1, 1, 1, 0, 1, 0, 0],
-        [0, 0, 1, 1, 1, 1, 1, 0, 1, 0],
-        [0, 0, 0 ,0 ,0 ,1 ,0, 0 ,1 ,0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 1, 0, 0, 0, 0, 0, 0, 1, 0],
+        [0, 0, 1, 0, 0, 0, 0, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+        [0, 1, 1, 0, 1, 1, 0, 1, 1, 0],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 0, 1, 1, 1, 1, 1, 1, 0, 1],
+        [1, 0, 1, 0, 0, 0, 0, 1, 0, 1],
+        [0, 0, 0, 1, 0, 0, 1, 0, 0, 0],
+        [0, 0, 0, 0, 0 ,0, 0, 0, 0, 0],
     ];
+
+    const coloredIcon = color !== 'black' && color !== '#000' && color !== '#000000' && color !== '#000f' && color !== '#000000ff';
 
     for (let i = 0; i < 10; i++) {
         for (let j = 0; j < 10; j++) {
             const y = i + ((code.modules.size - 1) / 2) - 5;
             const x = j + ((code.modules.size + 1) / 2) - 5;
-            code.modules.data[x * code.modules.size + y] = icon[i][j];
+            code.modules.data[x * code.modules.size + y] = !coloredIcon ? icon[i][j] : 0;
         }
     }
 
@@ -318,6 +320,31 @@ export default async function handler(
         svgPath += `<path d="${dataPath}" fill="#000" transform="translate(${offset},${offset}) scale(${width})"/>`;
     }
     console.log('duration', performance.now() - start);
+
+    if (coloredIcon) {
+        const iconBuffer = Buffer.alloc(icon.length * icon.length, 0);
+        for (let i = 0; i < 10; i++) {
+            for (let j = 0; j < 10; j++) {
+                iconBuffer[i * 10 + j] = icon[j][i];
+            }
+        }
+        const iconVisited = Buffer.alloc(iconBuffer.length, 0);
+        
+        let iconPath = '';
+        for (let i = 0; i < 10; i++) {
+            for (let j = 0; j < 10; j++) {
+                const segment = DFS(i, j, iconBuffer, iconVisited, 10);
+                if (segment.length) {
+                    const list = convertSegmentToCornerList(segment)!;
+                    optimizeCornerList(list);
+                    iconPath += convertCornerListToPath(list, 0, 0, 1);
+                }
+            }
+        }
+        const offsetX = offset + (((code.modules.size + 1) / 2) - 5) * width;
+        const offsetY = offset + (((code.modules.size - 1) / 2) - 5) * width;
+        svgPath += `<path d="${iconPath}" fill="${color}" transform="translate(${offsetX},${offsetY}) scale(${width})"/>`;
+    }
 
     const svg = `<?xml version="1.0" encoding="UTF-8"?><svg version="1.2" baseProfile="tiny" viewBox="0 0 ${circle ? 1168 : 580} ${circle ? 1168 : 580}" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">${svgPath}</svg>`;
 
