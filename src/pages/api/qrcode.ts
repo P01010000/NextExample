@@ -140,7 +140,10 @@ const optimizeCornerList = (list: [number, number][]) => {
         const cCorner = list[i];
         const nCorner = list[i + 1];
 
-        if (pCorner[0] === cCorner[0] && cCorner[0] === nCorner[0]) {
+        if (pCorner[0] === nCorner[0] && pCorner[1] === nCorner[1]) {
+            list.splice(i, 2);
+            i -= i === 1 ? 1 : 2;
+        } else if (pCorner[0] === cCorner[0] && cCorner[0] === nCorner[0]) {
             list.splice(i, 1);
             i--;
         } else if (pCorner[1] === cCorner[1] && cCorner[1] === nCorner[1]) {
@@ -155,11 +158,11 @@ const convertCornerListToPath = (list: [number, number][], offsetX: number = 0, 
         return '';
     }
     let prevCorner: [number, number];
-    let corner: [number, number] = list.shift()!;
+    let corner: [number, number] = list[0];
     let svgPath = `M${offsetX + corner[0] * width} ${offsetY + corner[1] * width}`;
-    while (list.length > 1) {
+    for (let i = 1; i < list.length - 1; i++) {
         prevCorner = corner;
-        corner = list.shift()!;
+        corner = list[i];
         if (corner[0] === prevCorner[0]) {
             svgPath += `v${(corner[1] - prevCorner[1]) * width}`;
         } else {
