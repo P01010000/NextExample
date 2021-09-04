@@ -74,7 +74,13 @@ const convertSegmentToCornerList = (segment: [number, number, number][]) => {
                     }
                 }
                 if (startIndex > -1) {
-                    list.splice(startIndex + 1, 0, [cRow + 1, cCol], [cRow, cCol]);
+                    if (list[startIndex - 1][0] === cRow + 1 && list[startIndex - 1][1] === cCol) {
+                        list.splice(startIndex, 1, [cRow, cCol]);
+                    } else if (list[startIndex + 2][0] === cRow && list[startIndex + 2][1] === cCol) {
+                        list.splice(startIndex + 1, 1, [cRow + 1, cCol]);
+                    } else {
+                        list.splice(startIndex + 1, 0, [cRow + 1, cCol], [cRow, cCol]);
+                    }
                 }
                 break;
             }
@@ -90,7 +96,13 @@ const convertSegmentToCornerList = (segment: [number, number, number][]) => {
                     }
                 }
                 if (startIndex > -1) {
-                    list.splice(startIndex + 1, 0, [cRow + 1, cCol + 1], [cRow + 1, cCol]);
+                    if (list[startIndex - 1][0] === cRow + 1 && list[startIndex - 1][1] === cCol + 1) {
+                        list.splice(startIndex, 1, [cRow + 1, cCol]);
+                    } else if (list[startIndex + 2][0] === cRow + 1 && list[startIndex + 2][1] === cCol) {
+                        list.splice(startIndex + 1, 1, [cRow + 1, cCol + 1]);
+                    } else {
+                        list.splice(startIndex + 1, 0, [cRow + 1, cCol + 1], [cRow + 1, cCol]);
+                    }
                 }
                 break;
             }
@@ -106,7 +118,13 @@ const convertSegmentToCornerList = (segment: [number, number, number][]) => {
                     }
                 }
                 if (startIndex > -1) {
-                    list.splice(startIndex + 1, 0, [cRow, cCol + 1], [cRow + 1, cCol + 1]);
+                    if (list[startIndex - 1][0] === cRow && list[startIndex - 1][1] === cCol + 1) {
+                        list.splice(startIndex, 1, [cRow + 1, cCol + 1]);
+                    } else if (list[startIndex + 2][0] === cRow + 1 && list[startIndex + 2][1] === cCol + 1) {
+                        list.splice(startIndex + 1, 1, [cRow, cCol + 1]);
+                    } else {
+                        list.splice(startIndex + 1, 0, [cRow, cCol + 1], [cRow + 1, cCol + 1]);
+                    }
                 }
                 break;
             }
@@ -122,7 +140,13 @@ const convertSegmentToCornerList = (segment: [number, number, number][]) => {
                     }
                 }
                 if (startIndex > -1) {
-                    list.splice(startIndex + 1, 0, [cRow, cCol], [cRow, cCol + 1]);
+                    if (list[startIndex - 1][0] === cRow && list[startIndex - 1][1] === cCol) {
+                        list.splice(startIndex, 1, [cRow, cCol + 1]);
+                    } else if (list[startIndex + 2][0] === cRow && list[startIndex + 2][1] === cCol + 1) {
+                        list.splice(startIndex + 1, 1, [cRow, cCol]);
+                    } else {
+                        list.splice(startIndex + 1, 0, [cRow, cCol], [cRow, cCol + 1]);
+                    }
                 }
                 break;
             }
