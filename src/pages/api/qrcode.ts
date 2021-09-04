@@ -60,69 +60,69 @@ const convertSegmentToCornerList = (segment: [number, number, number][]) => {
     segment.forEach(([cRow, cCol, direction]) => {
         switch (direction) {
             case -1:
-                list.push([cRow, cCol], [cRow + 1, cCol], [cRow + 1, cCol + 1], [cRow, cCol + 1], [cRow, cCol]);
+                list.push([cRow, cCol], [cRow, cCol + 1], [cRow + 1, cCol + 1], [cRow + 1, cCol], [cRow, cCol]);
                 break;
             case 0: {
-                // top
-                let startIndex = -1;
-                for (let i = list.length - 2; i >= 0; i--) {
-                    const [x1, y1] = list[i];
-                    const [x2, y2] = list[i + 1];
-                    if (x1 === cRow && y1 === cCol + 1 && x2 === cRow + 1 && y2 === cCol + 1) {
-                        startIndex = i;
-                        break;
-                    }
-                }
-                if (startIndex > -1) {
-                    list.splice(startIndex + 1, 0, [cRow, cCol], [cRow + 1, cCol]);
-                }
-                break;
-            }
-            case 1: {
-                // right
-                let startIndex = -1;
-                for (let i = list.length - 2; i >= 0; i--) {
-                    const [x1, y1] = list[i];
-                    const [x2, y2] = list[i + 1];
-                    if (x1 === cRow && y1 === cCol && x2 === cRow && y2 === cCol + 1) {
-                        startIndex = i;
-                        break;
-                    }
-                }
-                if (startIndex > -1) {
-                    list.splice(startIndex + 1, 0, [cRow + 1, cCol], [cRow + 1, cCol + 1]);
-                }
-                break;
-            }
-            case 2: {
-                // bottom
-                let startIndex = -1;
-                for (let i = list.length - 2; i >= 0; i--) {
-                    const [x1, y1] = list[i];
-                    const [x2, y2] = list[i + 1];
-                    if (x1 === cRow + 1 && y1 === cCol && x2 === cRow && y2 === cCol) {
-                        startIndex = i;
-                        break;
-                    }
-                }
-                if (startIndex > -1) {
-                    list.splice(startIndex + 1, 0, [cRow + 1, cCol + 1], [cRow, cCol + 1]);
-                }
-                break;
-            }
-            case 3: {
                 // left
                 let startIndex = -1;
                 for (let i = list.length - 2; i >= 0; i--) {
                     const [x1, y1] = list[i];
                     const [x2, y2] = list[i + 1];
-                    if (x1 === cRow + 1 && y1 === cCol + 1 && x2 === cRow + 1 && y2 === cCol) {
+                    if (x1 === cRow + 1 && y1 === cCol + 1 && x2 === cRow && y2 === cCol + 1) {
                         startIndex = i;
                         break;
                     }
                 }
                 if (startIndex > -1) {
-                    list.splice(startIndex + 1, 0, [cRow, cCol + 1], [cRow, cCol]);
+                    list.splice(startIndex + 1, 0, [cRow + 1, cCol], [cRow, cCol]);
+                }
+                break;
+            }
+            case 1: {
+                // bottom
+                let startIndex = -1;
+                for (let i = list.length - 2; i >= 0; i--) {
+                    const [x1, y1] = list[i];
+                    const [x2, y2] = list[i + 1];
+                    if (x1 === cRow && y1 === cCol + 1 && x2 === cRow && y2 === cCol) {
+                        startIndex = i;
+                        break;
+                    }
+                }
+                if (startIndex > -1) {
+                    list.splice(startIndex + 1, 0, [cRow + 1, cCol + 1], [cRow + 1, cCol]);
+                }
+                break;
+            }
+            case 2: {
+                // right
+                let startIndex = -1;
+                for (let i = list.length - 2; i >= 0; i--) {
+                    const [x1, y1] = list[i];
+                    const [x2, y2] = list[i + 1];
+                    if (x1 === cRow && y1 === cCol && x2 === cRow + 1 && y2 === cCol) {
+                        startIndex = i;
+                        break;
+                    }
+                }
+                if (startIndex > -1) {
+                    list.splice(startIndex + 1, 0, [cRow, cCol + 1], [cRow + 1, cCol + 1]);
+                }
+                break;
+            }
+            case 3: {
+                // top
+                let startIndex = -1;
+                for (let i = list.length - 2; i >= 0; i--) {
+                    const [x1, y1] = list[i];
+                    const [x2, y2] = list[i + 1];
+                    if (x1 === cRow + 1 && y1 === cCol && x2 === cRow + 1 && y2 === cCol + 1) {
+                        startIndex = i;
+                        break;
+                    }
+                }
+                if (startIndex > -1) {
+                    list.splice(startIndex + 1, 0, [cRow, cCol], [cRow, cCol + 1]);
                 }
                 break;
             }
@@ -159,14 +159,14 @@ const convertCornerListToPath = (list: [number, number][], offsetX: number = 0, 
     }
     let prevCorner: [number, number];
     let corner: [number, number] = list[0];
-    let svgPath = `M${offsetX + corner[0] * width} ${offsetY + corner[1] * width}`;
+    let svgPath = `M${offsetX + corner[1] * width} ${offsetY + corner[0] * width}`;
     for (let i = 1; i < list.length - 1; i++) {
         prevCorner = corner;
         corner = list[i];
         if (corner[0] === prevCorner[0]) {
-            svgPath += `v${(corner[1] - prevCorner[1]) * width}`;
+            svgPath += `h${(corner[1] - prevCorner[1]) * width}`;
         } else {
-            svgPath += `h${(corner[0] - prevCorner[0]) * width}`;
+            svgPath += `v${(corner[0] - prevCorner[0]) * width}`;
         }
     }
     return svgPath + 'z';
@@ -280,8 +280,8 @@ export default async function handler(
 
     for (let i = 0; i < 10; i++) {
         for (let j = 0; j < 10; j++) {
-            const y = i + ((code.modules.size - 1) / 2) - 5;
-            const x = j + ((code.modules.size + 1) / 2) - 5;
+            const y = i + ((code.modules.size + 1) / 2) - 5;
+            const x = j + ((code.modules.size - 1) / 2) - 5;
             code.modules.data[x * code.modules.size + y] = !coloredIcon ? icon[i][j] : 0;
         }
     }
@@ -334,12 +334,7 @@ export default async function handler(
     console.log('duration', performance.now() - start);
 
     if (coloredIcon) {
-        const iconBuffer = Buffer.alloc(icon.length * icon.length, 0);
-        for (let i = 0; i < 10; i++) {
-            for (let j = 0; j < 10; j++) {
-                iconBuffer[i * 10 + j] = icon[j][i];
-            }
-        }
+        const iconBuffer = Buffer.concat(icon.map(Buffer.from));
         const iconVisited = Buffer.alloc(iconBuffer.length, 0);
         
         let iconPath = '';
