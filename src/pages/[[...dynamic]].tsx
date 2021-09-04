@@ -95,7 +95,7 @@ const Dynamic: FunctionComponent<DynamicProps> = ({ a, siteId }) => {
         if ('SyncManager' in window) {
             const reg = await navigator.serviceWorker.getRegistration();
             if (reg) {
-                reg.sync.register('myFirstSync');
+                (reg as any).sync.register('myFirstSync');
             }
         } else {
             fetch(`/api/push/broadcast`, {
