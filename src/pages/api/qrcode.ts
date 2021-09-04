@@ -346,8 +346,8 @@ export default async function handler(
                     }
                 } else {
                     // naive version
-                    // svgPath += `<path d="M${i * width + offset} ${j * width + offset}h${width}v${width}h${-width}z" fill="#000"/>`;
-                    dataPath += `M${i} ${j}h1v1h-1z`;
+                    // svgPath += `<path d="M${j * width + offset} ${i * width + offset}h${width}v${width}h${-width}z" fill="#000"/>`;
+                    dataPath += `M${j} ${i}h1v1h-1z`;
                 }
             }
         }
@@ -371,8 +371,8 @@ export default async function handler(
                         optimizeCornerList(list);
                         iconPath += convertCornerListToPath(list, 0, 0, 1);
                     }
-                } else if (icon[j][i]) {
-                    iconPath += `M${i} ${j}h1v1h-1z`;
+                } else if (icon[i][j]) {
+                    iconPath += `M${j} ${i}h1v1h-1z`;
                 }
             }
         }
