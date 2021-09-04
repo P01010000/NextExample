@@ -21,7 +21,7 @@ const post = async (req: NextApiRequest, res: NextApiResponse) => {
             sub: subject,
             ...payload
         } = verify(token));
-    } catch (ex) {
+    } catch (ex: any) {
         res.statusCode = 401;
         return res.end(ex.message);
     }
