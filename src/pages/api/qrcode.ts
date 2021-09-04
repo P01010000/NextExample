@@ -282,7 +282,7 @@ export default async function handler(
         for (let j = 0; j < 10; j++) {
             const y = i + ((code.modules.size + 1) / 2) - 5;
             const x = j + ((code.modules.size - 1) / 2) - 5;
-            code.modules.data[x * code.modules.size + y] = !coloredIcon ? icon[i][j] : 0;
+            code.modules.data[x * code.modules.size + y] = !coloredIcon ? icon[j][i] : 0;
         }
     }
 
